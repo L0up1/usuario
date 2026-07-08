@@ -1,11 +1,17 @@
 package com.example.usuario.controller;
 
 import com.example.usuario.business.UsuarioService;
+import com.example.usuario.business.ViaCepService;
 import com.example.usuario.business.dto.EnderecoDTO;
 import com.example.usuario.business.dto.TelefoneDTO;
 import com.example.usuario.business.dto.UsuarioDTO;
+import com.example.usuario.infrastructure.clients.ViaCepDTO;
 import com.example.usuario.infrastructure.entity.Usuario;
+import com.example.usuario.infrastructure.exceptions.IllegalArgumentException;
 import com.example.usuario.infrastructure.security.JwtUtil;
+import com.example.usuario.infrastructure.security.SecurityConfig;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,11 +24,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/usuario")
 @RequiredArgsConstructor
+@Tag(name = "Tarefas", description = "Cadastra tarefas de usuários")
+@SecurityRequirement(name = SecurityConfig.SECURITY_SCHEME)
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final ViaCepService viaCepService;
 
     @PostMapping
     public ResponseEntity<UsuarioDTO> salvaUsuario(@RequestBody UsuarioDTO usuarioDTO){
@@ -74,4 +83,9 @@ public class UsuarioController {
     public ResponseEntity<TelefoneDTO> cadastraTelefone(@RequestBody TelefoneDTO dto, @RequestHeader("Authorization") String token){
         return ResponseEntity.ok(usuarioService.cadastraTelefone(token, dto));
     }
+
+    @GetMapping("/endereco/{cep}")
+        public ResponseEntity<ViaCepDTO> buscarDadosCep(@PathVariable("cep") String cep){
+            return ResponseEntity.ok(viaCepService.buscarDadosEndereco(cep));
+        }
 }
