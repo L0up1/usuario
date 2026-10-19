@@ -2,7 +2,7 @@ package com.example.usuario.infrastructure.exceptions;
 
 import javax.naming.AuthenticationException;
 
-public class UnauthorizedException extends AuthenticationException {
+public class UnauthorizedException extends RuntimeException {
 
     public UnauthorizedException(String mensagem) { super(mensagem);}
 
